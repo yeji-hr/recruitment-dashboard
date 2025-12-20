@@ -47,10 +47,9 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_TEAM_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
-          cd frontend
-          vercel pull --yes --environment=preview --token=$VERCEL_TOKEN
-          vercel build --token=$VERCEL_TOKEN
-          DEPLOY_URL=$(vercel deploy --prebuilt --token=$VERCEL_TOKEN)
+          vercel pull --yes --environment=preview --token=$VERCEL_TOKEN --cwd=frontend
+          vercel build --token=$VERCEL_TOKEN --cwd=frontend
+          DEPLOY_URL=$(vercel deploy --prebuilt --token=$VERCEL_TOKEN --cwd=frontend)
           echo "preview_url=$DEPLOY_URL" >> $GITHUB_OUTPUT
           echo "🔗 미리보기 URL: $DEPLOY_URL"
 
