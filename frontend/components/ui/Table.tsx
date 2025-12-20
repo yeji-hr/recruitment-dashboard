@@ -44,9 +44,10 @@ interface TableCellProps {
   children: ReactNode;
   className?: string;
   header?: boolean;
+  colSpan?: number;
 }
 
-export function TableCell({ children, className, header = false }: TableCellProps) {
+export function TableCell({ children, className, header = false, colSpan }: TableCellProps) {
   const Component = header ? 'th' : 'td';
   return (
     <Component
@@ -55,6 +56,7 @@ export function TableCell({ children, className, header = false }: TableCellProp
         header ? 'font-medium text-gray-900 text-left' : 'text-gray-700',
         className
       )}
+      colSpan={colSpan}
     >
       {children}
     </Component>
