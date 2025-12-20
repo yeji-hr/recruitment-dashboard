@@ -4,12 +4,9 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 env:
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_TEAM_ID }}
+  VERCEL_TEAM_ID: ${{ secrets.VERCEL_TEAM_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 jobs:
@@ -37,23 +34,16 @@ jobs:
           cd frontend
           npm run build
 
-      - name: Vercel CLI 설치
-        run: npm install -g vercel
-
-      - name: Vercel 프로젝트 정보 가져오기
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-        working-directory: frontend
-
-      - name: Vercel 빌드
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-        working-directory: frontend
-
-      - name: Vercel 배포
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
-        working-directory: frontend
+      - name: Vercel로 배포
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_TEAM_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./frontend
+          vercel-args: '--prod'
 
       - name: 배포 완료 알림
         run: |
           echo "✅ 배포가 성공적으로 완료되었습니다!"
-          echo "🚀 프로덕션 URL: https://your-project.vercel.app"
-
+          echo "🚀 프로덕션 배포 완료"

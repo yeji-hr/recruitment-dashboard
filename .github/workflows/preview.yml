@@ -7,7 +7,7 @@ on:
     types: [opened, synchronize, reopened]
 
 env:
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_TEAM_ID }}
+  VERCEL_TEAM_ID: ${{ secrets.VERCEL_TEAM_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 jobs:
@@ -41,24 +41,14 @@ jobs:
           cd frontend
           npm run build
 
-      - name: Vercel CLI 설치
-        run: npm install -g vercel
-
-      - name: Vercel 프로젝트 정보 가져오기
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-        working-directory: frontend
-
-      - name: Vercel 빌드
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
-        working-directory: frontend
-
-      - name: Vercel 미리보기 배포
+      - name: Vercel로 미리보기 배포
+        uses: amondnet/vercel-action@v25
         id: deploy
-        run: |
-          URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
-          echo "preview_url=$URL" >> $GITHUB_OUTPUT
-          echo "🔗 미리보기 URL: $URL"
-        working-directory: frontend
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_TEAM_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./frontend
 
       - name: PR에 댓글 작성
         uses: actions/github-script@v7
@@ -69,6 +59,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `## 🚀 미리보기 배포 완료!\n\n미리보기 URL: ${{ steps.deploy.outputs.preview_url }}\n\n배포가 성공적으로 완료되었습니다. 위 URL에서 변경사항을 확인할 수 있습니다.`
+              body: `## 🚀 미리보기 배포 완료!\n\n미리보기 URL: ${{ steps.deploy.outputs.preview-url }}\n\n배포가 성공적으로 완료되었습니다. 위 URL에서 변경사항을 확인할 수 있습니다.`
             })
-
