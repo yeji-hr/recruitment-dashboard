@@ -1,0 +1,74 @@
+name: Preview Deployment
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout 코드
+        uses: actions/checkout@v4
+
+      - name: Node.js 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: 의존성 설치
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Lint 검사
+        run: |
+          cd frontend
+          npm run lint
+        continue-on-error: true
+
+      - name: 빌드 테스트
+        run: |
+          cd frontend
+          npm run build
+
+      - name: Vercel CLI 설치
+        run: npm install -g vercel
+
+      - name: Vercel 프로젝트 정보 가져오기
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: frontend
+
+      - name: Vercel 빌드
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: frontend
+
+      - name: Vercel 미리보기 배포
+        id: deploy
+        run: |
+          URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          echo "preview_url=$URL" >> $GITHUB_OUTPUT
+          echo "🔗 미리보기 URL: $URL"
+        working-directory: frontend
+
+      - name: PR에 댓글 작성
+        uses: actions/github-script@v7
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🚀 미리보기 배포 완료!\n\n미리보기 URL: ${{ steps.deploy.outputs.preview_url }}\n\n배포가 성공적으로 완료되었습니다. 위 URL에서 변경사항을 확인할 수 있습니다.`
+            })
+

@@ -1,0 +1,59 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout 코드
+        uses: actions/checkout@v4
+
+      - name: Node.js 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: 의존성 설치
+        run: |
+          cd frontend
+          npm ci
+
+      - name: 빌드 테스트
+        run: |
+          cd frontend
+          npm run build
+
+      - name: Vercel CLI 설치
+        run: npm install -g vercel
+
+      - name: Vercel 프로젝트 정보 가져오기
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: frontend
+
+      - name: Vercel 빌드
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: frontend
+
+      - name: Vercel 배포
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: frontend
+
+      - name: 배포 완료 알림
+        run: |
+          echo "✅ 배포가 성공적으로 완료되었습니다!"
+          echo "🚀 프로덕션 URL: https://your-project.vercel.app"
+

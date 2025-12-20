@@ -55,9 +55,10 @@ deploy: check-vercel
 	vercel --yes
 	@echo "$(GREEN)✓ 미리보기 배포 완료!$(NC)"
 
-# Vercel 프로덕션 배포
+# Vercel 프로덕션 배포 (수동)
 deploy-prod: check-vercel
-	@echo "$(YELLOW)⚠ 프로덕션 환경에 배포합니다...$(NC)"
+	@echo "$(YELLOW)⚠ 수동으로 프로덕션 환경에 배포합니다...$(NC)"
+	@echo "$(BLUE)일반적으로는 main 브랜치에 푸시하면 GitHub Actions가 자동 배포합니다.$(NC)"
 	vercel --prod --yes
 	@echo "$(GREEN)✓ 프로덕션 배포 완료!$(NC)"
 
