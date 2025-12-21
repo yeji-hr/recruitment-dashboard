@@ -15,12 +15,12 @@ const mockCandidate = {
   position: 'FRONTEND' as const,
   status: 'APPLIED' as const,
   source: 'WANTED' as const,
-  appliedDate: '2024-12-10',
+  appliedDate: '2025-12-10',
   resumeUrl: 'https://example.com/resume.pdf',
   portfolioUrl: 'https://portfolio.example.com',
   notes: '프론트엔드 개발 경력 3년\nReact, TypeScript 능숙',
-  createdAt: '2024-12-10T09:00:00Z',
-  updatedAt: '2024-12-10T09:00:00Z',
+  createdAt: '2025-12-10T09:00:00Z',
+  updatedAt: '2025-12-10T09:00:00Z',
 };
 
 export default function EditCandidatePage({ params }: { params: { id: string } }) {
