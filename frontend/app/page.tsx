@@ -9,6 +9,7 @@ import LeadTimeWidget from '@/components/dashboard/LeadTimeWidget';
 import SourceROIChart from '@/components/dashboard/SourceROIChart';
 import DashboardFilter from '@/components/dashboard/DashboardFilter';
 import { calculateLeadTime, calculateSourceROI } from '@/utils/hrMetrics';
+import { Candidate } from '@/types/candidate';
 
 // 임시 데이터 (나중에 API로 대체)
 const mockStats = {
@@ -22,7 +23,7 @@ const mockStats = {
   rejected: 0,
 };
 
-const mockRecentCandidates = [
+const mockRecentCandidates: Candidate[] = [
   {
     id: '1',
     name: '김철수',
@@ -86,7 +87,7 @@ const mockRecentCandidates = [
 ];
 
 // 전체 후보자 데이터 (필터링용)
-const allCandidates = [
+const allCandidates: Candidate[] = [
   ...mockRecentCandidates,
   {
     id: '6',
