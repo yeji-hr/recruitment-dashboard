@@ -36,7 +36,7 @@ export default function FunnelComparisonChart({ report }: FunnelComparisonChartP
   return (
     <Card>
       <h3 className="text-lg font-semibold text-gray-900 mb-6">
-        📈 핵심 전환율 벤치마크
+        핵심 전환율 벤치마크
       </h3>
 
       <div className="space-y-6">
@@ -58,9 +58,9 @@ export default function FunnelComparisonChart({ report }: FunnelComparisonChartP
                     {item.value.toFixed(1)}%
                   </span>
                   {isBetter ? (
-                    <span className="text-green-600 text-xs font-semibold">✅ 우수</span>
+                    <span className="text-green-600 text-xs font-semibold">우수</span>
                   ) : (
-                    <span className="text-orange-600 text-xs font-semibold">⚠️ 개선</span>
+                    <span className="text-orange-600 text-xs font-semibold">개선필요</span>
                   )}
                 </div>
               </div>
@@ -98,12 +98,11 @@ export default function FunnelComparisonChart({ report }: FunnelComparisonChartP
       {/* 종합 평가 */}
       <div className="mt-6 p-4 bg-gray-50 rounded-lg">
         <div className="flex items-start gap-3">
-          <span className="text-2xl">💡</span>
           <div className="flex-1">
             <p className="text-sm font-semibold text-gray-900 mb-1">종합 평가</p>
             <p className="text-xs text-gray-700 leading-relaxed">
               {comparisonData.filter(d => d.value >= d.benchmark).length >= 3
-                ? '전반적으로 우수한 채용 퍼널 성과를 보이고 있습니다! 👏 현재 전략을 유지하세요.'
+                ? '전반적으로 우수한 채용 퍼널 성과를 보이고 있습니다. 현재 전략을 유지하세요.'
                 : comparisonData.filter(d => d.value >= d.benchmark).length >= 2
                 ? '양호한 수준이지만, 일부 단계에서 개선이 필요합니다. 병목 구간에 집중하세요.'
                 : '여러 단계에서 개선이 필요합니다. 각 단계별 선발 기준과 프로세스를 재검토하세요.'}

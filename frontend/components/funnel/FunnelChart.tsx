@@ -23,7 +23,7 @@ export default function FunnelChart({ data }: FunnelChartProps) {
   return (
     <Card>
       <h3 className="text-lg font-semibold text-gray-900 mb-6">
-        📊 채용 퍼널 시각화
+        채용 퍼널 시각화
       </h3>
 
       <div className="space-y-1">
