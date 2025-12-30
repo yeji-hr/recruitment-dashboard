@@ -1,9 +1,14 @@
 'use client';
 
+import { useState } from 'react';
 import { Users, FileText, Calendar, CheckCircle } from 'lucide-react';
 import StatCard from '@/components/dashboard/StatCard';
 import RecentCandidates from '@/components/dashboard/RecentCandidates';
-import StageChart from '@/components/dashboard/StageChart';
+import EnhancedStageChart from '@/components/dashboard/EnhancedStageChart';
+import LeadTimeWidget from '@/components/dashboard/LeadTimeWidget';
+import SourceROIChart from '@/components/dashboard/SourceROIChart';
+import DashboardFilter from '@/components/dashboard/DashboardFilter';
+import { calculateLeadTime, calculateSourceROI } from '@/utils/hrMetrics';
 
 // 임시 데이터 (나중에 API로 대체)
 const mockStats = {
@@ -80,48 +85,112 @@ const mockRecentCandidates = [
   },
 ];
 
+// 전체 후보자 데이터 (필터링용)
+const allCandidates = [
+  ...mockRecentCandidates,
+  {
+    id: '6',
+    name: '강민지',
+    email: 'kang@example.com',
+    phone: '010-1111-2222',
+    position: 'FRONTEND' as const,
+    status: 'FINAL' as const,
+    source: 'WANTED' as const,
+    appliedDate: '2025-11-20',
+    createdAt: '2025-11-20T09:00:00Z',
+    updatedAt: '2025-12-15T14:00:00Z',
+  },
+  {
+    id: '7',
+    name: '송하준',
+    email: 'song@example.com',
+    phone: '010-3333-4444',
+    position: 'BACKEND' as const,
+    status: 'FINAL' as const,
+    source: 'REMEMBER' as const,
+    appliedDate: '2025-11-18',
+    createdAt: '2025-11-18T10:00:00Z',
+    updatedAt: '2025-12-12T16:00:00Z',
+  },
+];
+
 export default function DashboardPage() {
+  const [filters, setFilters] = useState({ position: '', source: '' });
+
+  // 필터 적용
+  const filteredCandidates = allCandidates.filter(candidate => {
+    if (filters.position && candidate.position !== filters.position) return false;
+    if (filters.source && candidate.source !== filters.source) return false;
+    return true;
+  });
+
+  // 필터링된 데이터로 통계 재계산
+  const filteredStats = {
+    total: filteredCandidates.length,
+    applied: filteredCandidates.filter(c => c.status === 'APPLIED').length,
+    screening: filteredCandidates.filter(c => c.status === 'SCREENING').length,
+    interview1: filteredCandidates.filter(c => c.status === 'INTERVIEW_1').length,
+    assignment: filteredCandidates.filter(c => c.status === 'ASSIGNMENT').length,
+    interview2: filteredCandidates.filter(c => c.status === 'INTERVIEW_2').length,
+    final: filteredCandidates.filter(c => c.status === 'FINAL').length,
+    rejected: filteredCandidates.filter(c => c.status === 'REJECTED').length,
+  };
+
+  // HR 메트릭 계산
+  const leadTime = calculateLeadTime(filteredCandidates);
+  const sourceROI = calculateSourceROI(filteredCandidates);
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">대시보드</h1>
-        <p className="text-gray-600 mt-1">채용 현황을 한눈에 확인하세요</p>
+        <p className="text-gray-600 mt-1">
+          데이터 기반 채용 인사이트를 확인하세요
+        </p>
       </div>
 
+      {/* 필터 */}
+      <DashboardFilter onFilterChange={setFilters} />
+
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
         <StatCard
           title="전체 지원자"
-          value={mockStats.total}
+          value={filteredStats.total}
           icon={<Users className="text-white" size={24} />}
           color="bg-primary"
         />
         <StatCard
           title="서류접수"
-          value={mockStats.applied}
+          value={filteredStats.applied}
           icon={<FileText className="text-white" size={24} />}
           color="bg-warning"
         />
         <StatCard
           title="면접 진행"
-          value={mockStats.interview1 + mockStats.interview2}
+          value={filteredStats.interview1 + filteredStats.interview2}
           icon={<Calendar className="text-white" size={24} />}
           color="bg-purple-500"
         />
         <StatCard
           title="최종 합격"
-          value={mockStats.final}
+          value={filteredStats.final}
           icon={<CheckCircle className="text-white" size={24} />}
           color="bg-success"
         />
+        {/* 리드타임 위젯 */}
+        <LeadTimeWidget leadTime={leadTime} />
       </div>
 
-      {/* Charts and Recent Candidates */}
+      {/* 전환율 차트 & 채널별 ROI */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <StageChart stats={mockStats} />
-        <RecentCandidates candidates={mockRecentCandidates} />
+        <EnhancedStageChart stats={filteredStats} />
+        <SourceROIChart sourceData={sourceROI} />
       </div>
+
+      {/* 최근 지원자 */}
+      <RecentCandidates candidates={filteredCandidates.slice(0, 5)} />
     </div>
   );
 }

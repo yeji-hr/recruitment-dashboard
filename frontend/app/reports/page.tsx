@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import FunnelInputForm from '@/components/funnel/FunnelInputForm';
 import FunnelReportDisplay from '@/components/funnel/FunnelReport';
+import FunnelChart from '@/components/funnel/FunnelChart';
+import FunnelComparisonChart from '@/components/funnel/FunnelComparisonChart';
 import Button from '@/components/ui/Button';
 import { FunnelData, FunnelReport } from '@/types/funnel';
 import { calculateFunnelReport } from '@/utils/funnelCalculator';
@@ -97,7 +99,14 @@ export default function ReportsPage() {
               )}
             </div>
           </div>
+
+          {/* 시각화 차트 */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <FunnelChart data={currentReport.data} />
+            <FunnelComparisonChart report={currentReport} />
+          </div>
           
+          {/* 텍스트 리포트 */}
           <FunnelReportDisplay report={currentReport} />
         </>
       )}
