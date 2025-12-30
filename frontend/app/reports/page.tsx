@@ -3,8 +3,6 @@
 import { useState } from 'react';
 import FunnelInputForm from '@/components/funnel/FunnelInputForm';
 import FunnelReportDisplay from '@/components/funnel/FunnelReport';
-import FunnelChart from '@/components/funnel/FunnelChart';
-import FunnelComparisonChart from '@/components/funnel/FunnelComparisonChart';
 import Button from '@/components/ui/Button';
 import { FunnelData, FunnelReport } from '@/types/funnel';
 import { calculateFunnelReport } from '@/utils/funnelCalculator';
@@ -85,7 +83,7 @@ export default function ReportsPage() {
       {currentReport && (
         <>
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-900">📄 생성된 리포트</h2>
+            <h2 className="text-xl font-bold text-gray-900">생성된 리포트</h2>
             <div className="flex gap-3">
               <Button onClick={copyToClipboard} variant="secondary">
                 <FileDown size={18} className="mr-2" />
@@ -99,14 +97,7 @@ export default function ReportsPage() {
               )}
             </div>
           </div>
-
-          {/* 시각화 차트 */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <FunnelChart data={currentReport.data} />
-            <FunnelComparisonChart report={currentReport} />
-          </div>
           
-          {/* 텍스트 리포트 */}
           <FunnelReportDisplay report={currentReport} />
         </>
       )}
