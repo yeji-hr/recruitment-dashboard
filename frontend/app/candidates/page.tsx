@@ -1,77 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import FilterBar from '@/components/candidates/FilterBar';
 import CandidateTable from '@/components/candidates/CandidateTable';
-
-// 임시 데이터 (나중에 API로 대체)
-const mockCandidates = [
-  {
-    id: '1',
-    name: '김철수',
-    email: 'kim@example.com',
-    phone: '01012345678',
-    position: 'FRONTEND' as const,
-    status: 'APPLIED' as const,
-    source: 'WANTED' as const,
-    appliedDate: '2025-12-10',
-    createdAt: '2025-12-10T09:00:00Z',
-    updatedAt: '2025-12-10T09:00:00Z',
-  },
-  {
-    id: '2',
-    name: '이영희',
-    email: 'lee@example.com',
-    phone: '01023456789',
-    position: 'BACKEND' as const,
-    status: 'INTERVIEW_1' as const,
-    source: 'REMEMBER' as const,
-    appliedDate: '2025-12-09',
-    createdAt: '2025-12-09T10:00:00Z',
-    updatedAt: '2025-12-09T10:00:00Z',
-  },
-  {
-    id: '3',
-    name: '박민수',
-    email: 'park@example.com',
-    phone: '01034567890',
-    position: 'BACKEND' as const,
-    status: 'FINAL' as const,
-    source: 'SARAMIN' as const,
-    appliedDate: '2025-12-08',
-    createdAt: '2025-12-08T11:00:00Z',
-    updatedAt: '2025-12-08T11:00:00Z',
-  },
-  {
-    id: '4',
-    name: '정지훈',
-    email: 'jung@example.com',
-    phone: '01045678901',
-    position: 'FRONTEND' as const,
-    status: 'INTERVIEW_2' as const,
-    source: 'REFERRAL' as const,
-    appliedDate: '2025-12-07',
-    createdAt: '2025-12-07T14:00:00Z',
-    updatedAt: '2025-12-07T14:00:00Z',
-  },
-  {
-    id: '5',
-    name: '최수진',
-    email: 'choi@example.com',
-    phone: '01056789012',
-    position: 'VIDEO_MARKETER' as const,
-    status: 'SCREENING' as const,
-    source: 'WANTED' as const,
-    appliedDate: '2025-12-06',
-    createdAt: '2025-12-06T15:00:00Z',
-    updatedAt: '2025-12-06T15:00:00Z',
-  },
-];
+import { generateMockCandidates } from '@/utils/mockDataGenerator';
 
 export default function CandidatesPage() {
+  // 450명의 mock 데이터 생성
+  const mockCandidates = useMemo(() => generateMockCandidates(450), []);
+  
   const [candidates, setCandidates] = useState(mockCandidates);
   const [filteredCandidates, setFilteredCandidates] = useState(mockCandidates);
 
@@ -130,4 +70,3 @@ export default function CandidatesPage() {
     </div>
   );
 }
-
