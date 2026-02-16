@@ -19,6 +19,9 @@ export function calculateLeadTime(candidates: any[]): number {
 // 전환율 계산 (이전 단계 대비 합격률)
 export function calculateConversionRates(stats: CandidateStats) {
   return {
+    proposalToAcceptedRate: stats.proposal > 0 ? (stats.proposalAccepted / stats.proposal) * 100 : 0,
+    acceptedToCoverLetterRate: stats.proposalAccepted > 0 ? (stats.coverLetter / stats.proposalAccepted) * 100 : 0,
+    coverLetterToAppliedRate: stats.coverLetter > 0 ? (stats.applied / stats.coverLetter) * 100 : 0,
     screeningRate: stats.applied > 0 ? (stats.screening / stats.applied) * 100 : 0,
     interview1Rate: stats.screening > 0 ? (stats.interview1 / stats.screening) * 100 : 0,
     assignmentRate: stats.interview1 > 0 ? (stats.assignment / stats.interview1) * 100 : 0,

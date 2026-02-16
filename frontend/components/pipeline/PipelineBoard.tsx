@@ -14,6 +14,9 @@ const stages: Array<{
   key: CandidateStatus;
   color: string;
 }> = [
+  { key: 'PROPOSAL', color: 'bg-gray-500' },
+  { key: 'PROPOSAL_ACCEPTED', color: 'bg-cyan-500' },
+  { key: 'COVER_LETTER', color: 'bg-sky-500' },
   { key: 'APPLIED', color: 'bg-yellow-500' },
   { key: 'SCREENING', color: 'bg-blue-500' },
   { key: 'INTERVIEW_1', color: 'bg-indigo-500' },
