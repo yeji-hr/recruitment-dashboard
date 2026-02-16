@@ -5,8 +5,8 @@ import PipelineBoard from '@/components/pipeline/PipelineBoard';
 import { generateMockCandidates } from '@/utils/mockDataGenerator';
 
 export default function PipelinePage() {
-  // 450명의 mock 데이터 생성
-  const mockCandidates = useMemo(() => generateMockCandidates(450), []);
+  // 실제 AI 엔지니어 데이터 생성
+  const mockCandidates = useMemo(() => generateMockCandidates(), []);
 
   return (
     <div className="space-y-6">

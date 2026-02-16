@@ -27,8 +27,8 @@ const mockStats = {
 export default function DashboardPage() {
   const [filters, setFilters] = useState({ position: '', source: '' });
   
-  // 450명의 mock 데이터 생성 (useMemo로 캐싱)
-  const allCandidates = useMemo(() => generateMockCandidates(450), []);
+  // 실제 AI 엔지니어 데이터 생성 (useMemo로 캐싱)
+  const allCandidates = useMemo(() => generateMockCandidates(), []);
 
   // 필터 적용
   const filteredCandidates = allCandidates.filter(candidate => {

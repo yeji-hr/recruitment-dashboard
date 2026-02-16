@@ -1,42 +1,73 @@
 import { Candidate, CandidateStatus, Position, ApplicationSource } from '@/types/candidate';
 
-// 실제 AI 엔지니어 데이터 기반
+// 실제 AI 엔지니어 데이터 (원티드 + 리멤버)
 // 원티드: 제안 16,903명, 제안수락 1,171명(6.9%), 자소서 553명(3.3%), 서류전형 53명(0.32%), 1차면접 6명(0.04%), 과제 5명(0.03%), 2차면접 1명(0.01%)
 // 리멤버: 제안 4,258명, 제안수락 227명(5.3%), 자소서 36명(0.8%), 서류전형 11명(0.26%), 1차면접 5명(0.12%), 과제전형 2명(0.05%)
-// 총 제안: 21,161명
 
-const TOTAL_CANDIDATES = 450; // 대시보드용 샘플 데이터 수
+const REAL_DATA = {
+  // 실제 합산 데이터
+  PROPOSAL_WANTED: 16903,
+  PROPOSAL_REMEMBER: 4258,
+  PROPOSAL_TOTAL: 21161,
+  
+  ACCEPTED_WANTED: 1171,
+  ACCEPTED_REMEMBER: 227,
+  ACCEPTED_TOTAL: 1398,
+  
+  COVER_WANTED: 553,
+  COVER_REMEMBER: 36,
+  COVER_TOTAL: 589,
+  
+  SCREENING_WANTED: 53,
+  SCREENING_REMEMBER: 11,
+  SCREENING_TOTAL: 64,
+  
+  INTERVIEW1_WANTED: 6,
+  INTERVIEW1_REMEMBER: 5,
+  INTERVIEW1_TOTAL: 11,
+  
+  ASSIGNMENT_WANTED: 5,
+  ASSIGNMENT_REMEMBER: 2,
+  ASSIGNMENT_TOTAL: 7,
+  
+  INTERVIEW2_WANTED: 1,
+  INTERVIEW2_REMEMBER: 0,
+  INTERVIEW2_TOTAL: 1,
+  
+  FINAL_TOTAL: 1,
+  REJECTED_TOTAL: 50,
+};
 
-// 실제 데이터 기반 단계별 배분 (비율 유지)
+// 실제 데이터 기반 단계별 배분
 const stageDistribution = {
-  PROPOSAL: 0.35,           // 157명 - 제안
-  PROPOSAL_ACCEPTED: 0.22,  // 99명 - 제안수락 (약 6.6% 전환율)
-  COVER_LETTER: 0.15,       // 67명 - 자소서 제출 (약 3.1% 전환율)
-  APPLIED: 0.10,            // 45명 - 서류접수
-  SCREENING: 0.08,          // 36명 - 서류합격 (약 0.3% 전환율)
-  INTERVIEW_1: 0.05,        // 22명 - 1차면접
-  ASSIGNMENT: 0.03,         // 13명 - 과제전형
-  INTERVIEW_2: 0.015,       // 7명 - 최종면접
-  FINAL: 0.005,             // 2명 - 최종합격
-  REJECTED: 0.005,          // 2명 - 불합격
+  PROPOSAL: REAL_DATA.PROPOSAL_TOTAL,           // 21,161명
+  PROPOSAL_ACCEPTED: REAL_DATA.ACCEPTED_TOTAL,  // 1,398명
+  COVER_LETTER: REAL_DATA.COVER_TOTAL,          // 589명
+  APPLIED: REAL_DATA.COVER_TOTAL,               // 589명 (자소서 제출 = 서류접수)
+  SCREENING: REAL_DATA.SCREENING_TOTAL,         // 64명
+  INTERVIEW_1: REAL_DATA.INTERVIEW1_TOTAL,      // 11명
+  ASSIGNMENT: REAL_DATA.ASSIGNMENT_TOTAL,       // 7명
+  INTERVIEW_2: REAL_DATA.INTERVIEW2_TOTAL,      // 1명
+  FINAL: REAL_DATA.FINAL_TOTAL,                 // 1명
+  REJECTED: REAL_DATA.REJECTED_TOTAL,           // 50명
 };
 
-// 지원경로별 배분 (원티드가 압도적, 리멤버 그 다음)
+// 지원경로별 배분 (원티드 80%, 리멤버 20% - 제안 기준)
 const sourceDistribution = {
-  WANTED: 0.65,      // 원티드 65% (16,903/21,161)
-  REMEMBER: 0.25,    // 리멤버 25% (4,258/21,161)
-  SARAMIN: 0.05,     // 사람인 5%
-  JOBKOREA: 0.04,    // 잡코리아 4%
-  DIRECT: 0.01,      // 직접지원 1%
+  WANTED: 0.80,      // 원티드 80% (16,903/21,161)
+  REMEMBER: 0.20,    // 리멤버 20% (4,258/21,161)
+  SARAMIN: 0.00,     // 사람인 0% (AI 엔지니어는 주로 원티드/리멤버)
+  JOBKOREA: 0.00,    // 잡코리아 0%
+  DIRECT: 0.00,      // 직접지원 0%
 };
 
-// 포지션별 배분 (AI 엔지니어 중심)
+// 포지션별 배분 (AI 엔지니어만)
 const positionDistribution = {
-  AI_ENGINEER: 0.70,      // 70% - AI 엔지니어 (메인)
-  VIDEO_MARKETER: 0.15,   // 15% - 영상콘텐츠마케터
-  FRONTEND: 0.08,         // 8% - 프론트엔드
-  BACKEND: 0.05,          // 5% - 백엔드
-  OTHER: 0.02,            // 2% - 기타
+  AI_ENGINEER: 1.0,       // 100% - AI 엔지니어만
+  VIDEO_MARKETER: 0.0,
+  FRONTEND: 0.0,
+  BACKEND: 0.0,
+  OTHER: 0.0,
 };
 
 const firstNames = [
@@ -96,19 +127,13 @@ function getWeightedRandom<T extends string>(distribution: Record<T, number>): T
   return Object.keys(distribution)[0] as T;
 }
 
-export function generateMockCandidates(totalCount: number = TOTAL_CANDIDATES): Candidate[] {
+export function generateMockCandidates(): Candidate[] {
   const candidates: Candidate[] = [];
   
-  // 단계별 인원 계산
-  const distribution: Record<string, number> = {};
-  Object.entries(stageDistribution).forEach(([status, ratio]) => {
-    distribution[status] = Math.floor(totalCount * ratio);
-  });
-
   let idCounter = 1;
 
-  // 각 상태별로 지원자 생성
-  Object.entries(distribution).forEach(([status, count]) => {
+  // 각 상태별로 실제 데이터 개수만큼 지원자 생성
+  Object.entries(stageDistribution).forEach(([status, count]) => {
     for (let i = 0; i < count; i++) {
       const name = getRandomName();
       const position = getWeightedRandom(positionDistribution);
