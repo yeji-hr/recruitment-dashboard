@@ -16,7 +16,7 @@ interface DashboardFilterProps {
 export default function DashboardFilter({ onFilterChange }: DashboardFilterProps) {
   const [position, setPosition] = useState('');
   const [source, setSource] = useState('');
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true); // 기본적으로 펼쳐진 상태
 
   const handleApply = () => {
     onFilterChange({ position, source });
@@ -26,6 +26,17 @@ export default function DashboardFilter({ onFilterChange }: DashboardFilterProps
     setPosition('');
     setSource('');
     onFilterChange({ position: '', source: '' });
+  };
+  
+  // 선택 시 자동 적용
+  const handlePositionChange = (value: string) => {
+    setPosition(value);
+    onFilterChange({ position: value, source });
+  };
+  
+  const handleSourceChange = (value: string) => {
+    setSource(value);
+    onFilterChange({ position, source: value });
   };
 
   const hasFilters = position || source;
@@ -62,7 +73,7 @@ export default function DashboardFilter({ onFilterChange }: DashboardFilterProps
               </label>
               <Select
                 value={position}
-                onChange={(e) => setPosition(e.target.value)}
+                onChange={(e) => handlePositionChange(e.target.value)}
               >
                 <option value="">전체 직무</option>
                 {Object.entries(POSITION_LABELS).map(([key, label]) => (
@@ -80,7 +91,7 @@ export default function DashboardFilter({ onFilterChange }: DashboardFilterProps
               </label>
               <Select
                 value={source}
-                onChange={(e) => setSource(e.target.value)}
+                onChange={(e) => handleSourceChange(e.target.value)}
               >
                 <option value="">전체 채널</option>
                 {Object.entries(APPLICATION_SOURCE_LABELS).map(([key, label]) => (
@@ -94,30 +105,30 @@ export default function DashboardFilter({ onFilterChange }: DashboardFilterProps
 
           {/* 액션 버튼 */}
           <div className="flex items-center gap-3">
-            <Button onClick={handleApply} size="sm">
-              필터 적용
-            </Button>
             {hasFilters && (
               <Button onClick={handleReset} variant="secondary" size="sm">
                 <X size={16} className="mr-1" />
-                초기화
+                필터 초기화
               </Button>
             )}
           </div>
 
           {/* 현재 필터 표시 */}
           {hasFilters && (
-            <div className="flex flex-wrap gap-2">
-              {position && (
-                <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
-                  직무: {POSITION_LABELS[position as keyof typeof POSITION_LABELS]}
-                </span>
-              )}
-              {source && (
-                <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded-full">
-                  채널: {APPLICATION_SOURCE_LABELS[source as keyof typeof APPLICATION_SOURCE_LABELS]}
-                </span>
-              )}
+            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm font-medium text-blue-900 mb-2">적용된 필터:</p>
+              <div className="flex flex-wrap gap-2">
+                {position && (
+                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full font-medium">
+                    직무: {POSITION_LABELS[position as keyof typeof POSITION_LABELS]}
+                  </span>
+                )}
+                {source && (
+                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded-full font-medium">
+                    채널: {APPLICATION_SOURCE_LABELS[source as keyof typeof APPLICATION_SOURCE_LABELS]}
+                  </span>
+                )}
+              </div>
             </div>
           )}
         </div>

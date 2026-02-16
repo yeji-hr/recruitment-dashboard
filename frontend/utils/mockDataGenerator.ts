@@ -1,8 +1,24 @@
 import { Candidate, CandidateStatus, Position, ApplicationSource } from '@/types/candidate';
 
-const positions: Position[] = ['FRONTEND', 'BACKEND', 'VIDEO_MARKETER', 'OTHER'];
-const sources: ApplicationSource[] = ['WANTED', 'REMEMBER', 'SARAMIN', 'JOBKOREA', 'REFERRAL', 'DIRECT', 'OTHER'];
-const statuses: CandidateStatus[] = ['APPLIED', 'SCREENING', 'INTERVIEW_1', 'ASSIGNMENT', 'INTERVIEW_2', 'FINAL', 'REJECTED'];
+// 실제 데이터 기반 포지션별 배분
+const positionDistribution = {
+  AI_ENGINEER: 0.35,      // 35% - AI 엔지니어 (가장 많은 지원)
+  VIDEO_MARKETER: 0.30,   // 30% - 영상콘텐츠마케터
+  FRONTEND: 0.18,         // 18% - 프론트엔드
+  BACKEND: 0.15,          // 15% - 백엔드
+  OTHER: 0.02,            // 2% - 기타
+};
+
+// 지원경로별 배분 (실제 데이터 반영)
+const sourceDistribution = {
+  WANTED: 0.40,      // 원티드가 가장 많음
+  REMEMBER: 0.20,    // 리멤버
+  JOBKOREA: 0.20,    // 잡코리아
+  SARAMIN: 0.10,     // 사람인
+  REFERRAL: 0.05,    // 추천
+  DIRECT: 0.03,      // 직접지원
+  OTHER: 0.02,       // 기타
+};
 
 const firstNames = [
   '김', '이', '박', '최', '정', '강', '조', '윤', '장', '임',
@@ -46,18 +62,33 @@ function getRandomPhone(): string {
   return `010-${middle}-${last}`;
 }
 
+// 가중치 기반 랜덤 선택
+function getWeightedRandom<T extends string>(distribution: Record<T, number>): T {
+  const rand = Math.random();
+  let sum = 0;
+  
+  for (const [key, weight] of Object.entries(distribution) as [T, number][]) {
+    sum += weight;
+    if (rand <= sum) {
+      return key;
+    }
+  }
+  
+  return Object.keys(distribution)[0] as T;
+}
+
 export function generateMockCandidates(totalCount: number = 450): Candidate[] {
   const candidates: Candidate[] = [];
   
-  // 단계별 인원 배분 (전환율 고려)
+  // 실제 데이터 기반 단계별 인원 배분
   const distribution = {
-    APPLIED: 450,
-    SCREENING: 320,
-    INTERVIEW_1: 240,
-    ASSIGNMENT: 170,
-    INTERVIEW_2: 120,
-    FINAL: 85,
-    REJECTED: 45,
+    APPLIED: Math.floor(totalCount * 0.20),      // 90명 - 서류접수
+    SCREENING: Math.floor(totalCount * 0.25),    // 112명 - 서류합격
+    INTERVIEW_1: Math.floor(totalCount * 0.22),  // 99명 - 1차면접
+    ASSIGNMENT: Math.floor(totalCount * 0.15),   // 67명 - 과제전형
+    INTERVIEW_2: Math.floor(totalCount * 0.10),  // 45명 - 최종면접
+    FINAL: Math.floor(totalCount * 0.06),        // 27명 - 최종합격
+    REJECTED: Math.floor(totalCount * 0.02),     // 10명 - 불합격
   };
 
   let idCounter = 1;
@@ -66,8 +97,8 @@ export function generateMockCandidates(totalCount: number = 450): Candidate[] {
   Object.entries(distribution).forEach(([status, count]) => {
     for (let i = 0; i < count; i++) {
       const name = getRandomName();
-      const position = positions[Math.floor(Math.random() * positions.length)];
-      const source = sources[Math.floor(Math.random() * sources.length)];
+      const position = getWeightedRandom(positionDistribution);
+      const source = getWeightedRandom(sourceDistribution);
       const appliedDate = getRandomDate();
       const createdAt = `${appliedDate}T09:00:00Z`;
       const updatedAt = status === 'APPLIED' 
@@ -94,4 +125,3 @@ export function generateMockCandidates(totalCount: number = 450): Candidate[] {
     new Date(b.appliedDate).getTime() - new Date(a.appliedDate).getTime()
   );
 }
-

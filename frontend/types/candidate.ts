@@ -10,6 +10,7 @@ export type CandidateStatus =
 export type Position = 
   | 'FRONTEND'
   | 'BACKEND'
+  | 'AI_ENGINEER'
   | 'VIDEO_MARKETER'
   | 'OTHER';
 

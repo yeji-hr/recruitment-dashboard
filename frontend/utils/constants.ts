@@ -23,6 +23,7 @@ export const CANDIDATE_STATUS_COLORS: Record<CandidateStatus, string> = {
 export const POSITION_LABELS: Record<Position, string> = {
   FRONTEND: '프론트엔드',
   BACKEND: '백엔드',
+  AI_ENGINEER: 'AI 엔지니어',
   VIDEO_MARKETER: '영상콘텐츠마케터',
   OTHER: '기타',
 };
