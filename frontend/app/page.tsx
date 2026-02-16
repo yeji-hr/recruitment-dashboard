@@ -77,7 +77,7 @@ const mockRecentCandidates: Candidate[] = [
     name: '최수진',
     email: 'choi@example.com',
     phone: '010-5678-9012',
-    position: 'PM' as const,
+    position: 'VIDEO_MARKETER' as const,
     status: 'SCREENING' as const,
     source: 'WANTED' as const,
     appliedDate: '2025-12-06',
@@ -155,7 +155,7 @@ export default function DashboardPage() {
       <DashboardFilter onFilterChange={setFilters} />
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-6">
         <StatCard
           title="전체 지원자"
           value={filteredStats.total}
@@ -167,6 +167,18 @@ export default function DashboardPage() {
           value={filteredStats.applied}
           icon={<FileText className="text-white" size={24} />}
           color="bg-warning"
+        />
+        <StatCard
+          title="1차면접 합격"
+          value={filteredStats.interview1}
+          icon={<Calendar className="text-white" size={24} />}
+          color="bg-indigo-500"
+        />
+        <StatCard
+          title="과제 합격"
+          value={filteredStats.assignment}
+          icon={<FileText className="text-white" size={24} />}
+          color="bg-orange-500"
         />
         <StatCard
           title="면접 진행"

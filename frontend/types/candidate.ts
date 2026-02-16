@@ -10,7 +10,7 @@ export type CandidateStatus =
 export type Position = 
   | 'FRONTEND'
   | 'BACKEND'
-  | 'PM'
+  | 'VIDEO_MARKETER'
   | 'OTHER';
 
 export type ApplicationSource = 

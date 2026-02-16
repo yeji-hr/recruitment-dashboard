@@ -62,7 +62,7 @@ const mockCandidates = [
     name: '최수진',
     email: 'choi@example.com',
     phone: '01056789012',
-    position: 'PM' as const,
+    position: 'VIDEO_MARKETER' as const,
     status: 'SCREENING' as const,
     source: 'WANTED' as const,
     appliedDate: '2025-12-06',
