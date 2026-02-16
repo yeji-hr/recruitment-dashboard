@@ -23,8 +23,6 @@ export const CANDIDATE_STATUS_COLORS: Record<CandidateStatus, string> = {
 export const POSITION_LABELS: Record<Position, string> = {
   FRONTEND: '프론트엔드',
   BACKEND: '백엔드',
-  FULLSTACK: '풀스택',
-  DESIGN: '디자인',
   PM: '기획',
   OTHER: '기타',
 };
@@ -34,7 +32,6 @@ export const APPLICATION_SOURCE_LABELS: Record<ApplicationSource, string> = {
   REMEMBER: '리멤버',
   SARAMIN: '사람인',
   JOBKOREA: '잡코리아',
-  LINKEDIN: '링크드인',
   REFERRAL: '추천',
   DIRECT: '직접지원',
   OTHER: '기타',
@@ -45,7 +42,6 @@ export const APPLICATION_SOURCE_COLORS: Record<ApplicationSource, string> = {
   REMEMBER: 'bg-purple-100 text-purple-800',
   SARAMIN: 'bg-green-100 text-green-800',
   JOBKOREA: 'bg-yellow-100 text-yellow-800',
-  LINKEDIN: 'bg-indigo-100 text-indigo-800',
   REFERRAL: 'bg-pink-100 text-pink-800',
   DIRECT: 'bg-gray-100 text-gray-800',
   OTHER: 'bg-orange-100 text-orange-800',

@@ -3,9 +3,10 @@
 import { useState } from 'react';
 import FunnelInputForm from '@/components/funnel/FunnelInputForm';
 import FunnelReportDisplay from '@/components/funnel/FunnelReport';
+import BottleneckAnalysis from '@/components/funnel/BottleneckAnalysis';
 import Button from '@/components/ui/Button';
 import { FunnelData, FunnelReport } from '@/types/funnel';
-import { calculateFunnelReport } from '@/utils/funnelCalculator';
+import { calculateFunnelReport, analyzeBottleneck } from '@/utils/funnelCalculator';
 import { FileDown, History } from 'lucide-react';
 
 export default function ReportsPage() {
@@ -99,6 +100,9 @@ export default function ReportsPage() {
           </div>
           
           <FunnelReportDisplay report={currentReport} />
+          
+          {/* 병목구간 분석 */}
+          <BottleneckAnalysis analyses={analyzeBottleneck(currentReport)} />
         </>
       )}
 

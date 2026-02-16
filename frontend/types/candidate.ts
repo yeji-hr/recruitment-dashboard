@@ -10,8 +10,6 @@ export type CandidateStatus =
 export type Position = 
   | 'FRONTEND'
   | 'BACKEND'
-  | 'FULLSTACK'
-  | 'DESIGN'
   | 'PM'
   | 'OTHER';
 
@@ -20,7 +18,6 @@ export type ApplicationSource =
   | 'REMEMBER'    // 리멤버
   | 'SARAMIN'     // 사람인
   | 'JOBKOREA'    // 잡코리아
-  | 'LINKEDIN'    // 링크드인
   | 'REFERRAL'    // 추천
   | 'DIRECT'      // 직접지원
   | 'OTHER';      // 기타
