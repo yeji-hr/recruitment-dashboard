@@ -3,7 +3,6 @@
 import Card from '@/components/ui/Card';
 import { CandidateStats } from '@/types/candidate';
 import { CANDIDATE_STATUS_LABELS } from '@/utils/constants';
-import { calculateConversionRates } from '@/utils/hrMetrics';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
 interface EnhancedStageChartProps {
@@ -11,16 +10,48 @@ interface EnhancedStageChartProps {
 }
 
 export default function EnhancedStageChart({ stats }: EnhancedStageChartProps) {
-  const conversionRates = calculateConversionRates(stats);
+  // 각 단계별 전환율 계산 (실제 AI 엔지니어 데이터 기반)
+  const proposalToAccepted = stats.proposal > 0 ? (stats.proposalAccepted / stats.proposal) * 100 : 0;
+  const acceptedToCoverLetter = stats.proposalAccepted > 0 ? (stats.coverLetter / stats.proposalAccepted) * 100 : 0;
+  const coverLetterToApplied = stats.coverLetter > 0 ? (stats.applied / stats.coverLetter) * 100 : 0;
+  const appliedToScreening = stats.applied > 0 ? (stats.screening / stats.applied) * 100 : 0;
+  const screeningToInterview1 = stats.screening > 0 ? (stats.interview1 / stats.screening) * 100 : 0;
+  const interview1ToAssignment = stats.interview1 > 0 ? (stats.assignment / stats.interview1) * 100 : 0;
+  const assignmentToInterview2 = stats.assignment > 0 ? (stats.interview2 / stats.assignment) * 100 : 0;
+  const interview2ToFinal = stats.interview2 > 0 ? (stats.final / stats.interview2) * 100 : 0;
   
   const stages = [
+    { 
+      key: 'proposal', 
+      label: CANDIDATE_STATUS_LABELS.PROPOSAL, 
+      value: stats.proposal, 
+      color: 'bg-gray-500',
+      nextLabel: '→ 제안수락',
+      conversionRate: proposalToAccepted,
+    },
+    { 
+      key: 'proposalAccepted', 
+      label: CANDIDATE_STATUS_LABELS.PROPOSAL_ACCEPTED, 
+      value: stats.proposalAccepted, 
+      color: 'bg-cyan-500',
+      nextLabel: '→ 자소서',
+      conversionRate: acceptedToCoverLetter,
+    },
+    { 
+      key: 'coverLetter', 
+      label: CANDIDATE_STATUS_LABELS.COVER_LETTER, 
+      value: stats.coverLetter, 
+      color: 'bg-sky-500',
+      nextLabel: '→ 서류접수',
+      conversionRate: coverLetterToApplied,
+    },
     { 
       key: 'applied', 
       label: CANDIDATE_STATUS_LABELS.APPLIED, 
       value: stats.applied, 
       color: 'bg-yellow-500',
       nextLabel: '→ 서류합격',
-      conversionRate: conversionRates.screeningRate,
+      conversionRate: appliedToScreening,
     },
     { 
       key: 'screening', 
@@ -28,7 +59,7 @@ export default function EnhancedStageChart({ stats }: EnhancedStageChartProps) {
       value: stats.screening, 
       color: 'bg-blue-500',
       nextLabel: '→ 1차면접',
-      conversionRate: conversionRates.interview1Rate,
+      conversionRate: screeningToInterview1,
     },
     { 
       key: 'interview1', 
@@ -36,7 +67,7 @@ export default function EnhancedStageChart({ stats }: EnhancedStageChartProps) {
       value: stats.interview1, 
       color: 'bg-indigo-500',
       nextLabel: '→ 과제전형',
-      conversionRate: conversionRates.assignmentRate,
+      conversionRate: interview1ToAssignment,
     },
     { 
       key: 'assignment', 
@@ -44,7 +75,7 @@ export default function EnhancedStageChart({ stats }: EnhancedStageChartProps) {
       value: stats.assignment, 
       color: 'bg-orange-500',
       nextLabel: '→ 최종면접',
-      conversionRate: conversionRates.interview2Rate,
+      conversionRate: assignmentToInterview2,
     },
     { 
       key: 'interview2', 
@@ -52,7 +83,7 @@ export default function EnhancedStageChart({ stats }: EnhancedStageChartProps) {
       value: stats.interview2, 
       color: 'bg-purple-500',
       nextLabel: '→ 최종합격',
-      conversionRate: conversionRates.finalRate,
+      conversionRate: interview2ToFinal,
     },
     { 
       key: 'final', 
@@ -72,16 +103,17 @@ export default function EnhancedStageChart({ stats }: EnhancedStageChartProps) {
         단계별 현황 및 전환율
       </h3>
       
-      <div className="space-y-4">
+      <div className="space-y-3">
         {stages.map((stage) => {
           const percentage = (stage.value / maxValue) * 100;
-          const isGoodConversion = stage.conversionRate !== null && stage.conversionRate >= 50;
+          // AI 엔지니어는 전환율이 낮으므로 기준을 20%로 조정
+          const isGoodConversion = stage.conversionRate !== null && stage.conversionRate >= 20;
           
           return (
             <div key={stage.key}>
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-1.5">
                 <div className="flex items-center gap-3">
-                  <span className="text-sm font-medium text-gray-700">{stage.label}</span>
+                  <span className="text-sm font-medium text-gray-700 min-w-[100px]">{stage.label}</span>
                   <span className="text-sm font-bold text-gray-900">{stage.value}명</span>
                 </div>
                 
@@ -123,10 +155,9 @@ export default function EnhancedStageChart({ stats }: EnhancedStageChartProps) {
         <p className="text-xs text-gray-700">
           <span className="font-semibold">💡 전환율 가이드:</span> 
           {' '}각 단계에서 다음 단계로 넘어가는 비율입니다. 
-          50% 이상이면 우수(🟢), 50% 미만이면 개선 필요(🟠)입니다.
+          AI 엔지니어 채용은 경쟁이 치열해 전환율이 낮습니다. 20% 이상이면 우수(🟢), 20% 미만이면 개선 필요(🟠)입니다.
         </p>
       </div>
     </Card>
   );
 }
-

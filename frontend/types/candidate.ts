@@ -1,11 +1,14 @@
 export type CandidateStatus = 
-  | 'APPLIED'      // 서류접수
-  | 'SCREENING'    // 서류합격
-  | 'INTERVIEW_1'  // 1차면접
-  | 'ASSIGNMENT'   // 과제전형
-  | 'INTERVIEW_2'  // 최종면접
-  | 'FINAL'        // 최종합격
-  | 'REJECTED';    // 불합격
+  | 'PROPOSAL'       // 제안
+  | 'PROPOSAL_ACCEPTED' // 제안수락
+  | 'COVER_LETTER'  // 자기소개서 제출
+  | 'APPLIED'       // 서류접수
+  | 'SCREENING'     // 서류합격
+  | 'INTERVIEW_1'   // 1차면접
+  | 'ASSIGNMENT'    // 과제전형
+  | 'INTERVIEW_2'   // 최종면접
+  | 'FINAL'         // 최종합격
+  | 'REJECTED';     // 불합격
 
 export type Position = 
   | 'FRONTEND'
@@ -19,9 +22,7 @@ export type ApplicationSource =
   | 'REMEMBER'    // 리멤버
   | 'SARAMIN'     // 사람인
   | 'JOBKOREA'    // 잡코리아
-  | 'REFERRAL'    // 추천
-  | 'DIRECT'      // 직접지원
-  | 'OTHER';      // 기타
+  | 'DIRECT';     // 직접지원
 
 export interface Candidate {
   id: string;
@@ -52,10 +53,13 @@ export interface CandidateFormData {
 
 export interface CandidateStats {
   total: number;
+  proposal: number;
+  proposalAccepted: number;
+  coverLetter: number;
   applied: number;
   screening: number;
-  assignment: number;
   interview1: number;
+  assignment: number;
   interview2: number;
   final: number;
   rejected: number;

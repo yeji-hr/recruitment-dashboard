@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Users, FileText, Calendar, CheckCircle } from 'lucide-react';
+import { Users, Send, CheckCircle2, FileEdit, FileText, Calendar, Award } from 'lucide-react';
 import StatCard from '@/components/dashboard/StatCard';
 import RecentCandidates from '@/components/dashboard/RecentCandidates';
 import EnhancedStageChart from '@/components/dashboard/EnhancedStageChart';
@@ -40,6 +40,9 @@ export default function DashboardPage() {
   // 필터링된 데이터로 통계 재계산
   const filteredStats = {
     total: filteredCandidates.length,
+    proposal: filteredCandidates.filter(c => c.status === 'PROPOSAL').length,
+    proposalAccepted: filteredCandidates.filter(c => c.status === 'PROPOSAL_ACCEPTED').length,
+    coverLetter: filteredCandidates.filter(c => c.status === 'COVER_LETTER').length,
     applied: filteredCandidates.filter(c => c.status === 'APPLIED').length,
     screening: filteredCandidates.filter(c => c.status === 'SCREENING').length,
     interview1: filteredCandidates.filter(c => c.status === 'INTERVIEW_1').length,
@@ -67,18 +70,24 @@ export default function DashboardPage() {
       <DashboardFilter onFilterChange={setFilters} />
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <StatCard
-          title="전체 지원자"
-          value={filteredStats.total}
-          icon={<Users className="text-white" size={24} />}
-          color="bg-primary"
+          title="제안"
+          value={filteredStats.proposal}
+          icon={<Send className="text-white" size={24} />}
+          color="bg-gray-600"
         />
         <StatCard
-          title="서류접수"
-          value={filteredStats.applied}
-          icon={<FileText className="text-white" size={24} />}
-          color="bg-warning"
+          title="제안수락"
+          value={filteredStats.proposalAccepted}
+          icon={<CheckCircle2 className="text-white" size={24} />}
+          color="bg-cyan-500"
+        />
+        <StatCard
+          title="자소서 제출"
+          value={filteredStats.coverLetter}
+          icon={<FileEdit className="text-white" size={24} />}
+          color="bg-sky-500"
         />
         <StatCard
           title="1차면접 합격"
@@ -92,17 +101,27 @@ export default function DashboardPage() {
           icon={<FileText className="text-white" size={24} />}
           color="bg-orange-500"
         />
+      </div>
+      
+      {/* 추가 통계 Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
-          title="면접 진행"
-          value={filteredStats.interview1 + filteredStats.interview2}
+          title="서류접수"
+          value={filteredStats.applied}
+          icon={<FileText className="text-white" size={24} />}
+          color="bg-yellow-500"
+        />
+        <StatCard
+          title="최종면접"
+          value={filteredStats.interview2}
           icon={<Calendar className="text-white" size={24} />}
           color="bg-purple-500"
         />
         <StatCard
           title="최종 합격"
           value={filteredStats.final}
-          icon={<CheckCircle className="text-white" size={24} />}
-          color="bg-success"
+          icon={<Award className="text-white" size={24} />}
+          color="bg-green-500"
         />
         {/* 리드타임 위젯 */}
         <LeadTimeWidget leadTime={leadTime} />
