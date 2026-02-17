@@ -108,16 +108,29 @@ const emailDomains = [
   'outlook.com',
 ];
 
-// 랜덤 이메일 생성
-function getRandomEmail(name: string, id: number): string {
-  const cleanName = name.toLowerCase().replace(/\s/g, '');
+// 영문 이름 생성용 배열
+const englishNames = [
+  'james', 'john', 'robert', 'michael', 'william', 'david', 'richard', 'joseph',
+  'thomas', 'charles', 'mary', 'patricia', 'jennifer', 'linda', 'elizabeth', 'barbara',
+  'susan', 'jessica', 'sarah', 'karen', 'nancy', 'lisa', 'betty', 'margaret',
+  'alex', 'chris', 'sam', 'lee', 'kim', 'park', 'choi', 'jung', 'kang',
+  'daniel', 'paul', 'mark', 'donald', 'george', 'kenneth', 'steven', 'edward',
+  'brian', 'ronald', 'anthony', 'kevin', 'jason', 'matthew', 'gary', 'timothy'
+];
+
+// 랜덤 이메일 생성 (영문 + 숫자만)
+function getRandomEmail(id: number): string {
   const domain = emailDomains[Math.floor(Math.random() * emailDomains.length)];
+  const englishName = englishNames[Math.floor(Math.random() * englishNames.length)];
   const randomNum = Math.floor(Math.random() * 9000) + 1000;
+  const randomNum2 = Math.floor(Math.random() * 100);
+  
   const patterns = [
-    `${cleanName}${randomNum}@${domain}`,
-    `${cleanName}.${id}@${domain}`,
-    `${cleanName}_${randomNum}@${domain}`,
-    `${randomNum}${cleanName}@${domain}`,
+    `${englishName}${randomNum}@${domain}`,
+    `${englishName}.${randomNum2}@${domain}`,
+    `${englishName}_${id}@${domain}`,
+    `${randomNum}${englishName}@${domain}`,
+    `${englishName}${randomNum2}${randomNum}@${domain}`,
   ];
   return patterns[Math.floor(Math.random() * patterns.length)];
 }
@@ -158,7 +171,7 @@ export function generateMockCandidates(): Candidate[] {
       candidates.push({
         id: String(idCounter++),
         name,
-        email: getRandomEmail(name, idCounter),
+        email: getRandomEmail(idCounter),
         phone: getRandomPhone(),
         position,
         status: status as CandidateStatus,
