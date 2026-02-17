@@ -96,16 +96,11 @@ function getRandomPhone(): string {
   return `010-${middle}-${last}`;
 }
 
-// 이메일 도메인 배열
+// 이메일 도메인 배열 (네이버, 다음, 지메일만)
 const emailDomains = [
   'naver.com',
   'gmail.com',
   'daum.net',
-  'kakao.com',
-  'hanmail.net',
-  'nate.com',
-  'hotmail.com',
-  'outlook.com',
 ];
 
 // 영문 이름 생성용 배열
