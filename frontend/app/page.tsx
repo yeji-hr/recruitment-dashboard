@@ -10,24 +10,12 @@ import SourceROIChart from '@/components/dashboard/SourceROIChart';
 import DashboardFilter from '@/components/dashboard/DashboardFilter';
 import { calculateLeadTime, calculateSourceROI } from '@/utils/hrMetrics';
 import { Candidate } from '@/types/candidate';
-import { generateMockCandidates } from '@/utils/mockDataGenerator';
-
-// 임시 데이터 (나중에 API로 대체)
-const mockStats = {
-  total: 450,
-  applied: 450,
-  screening: 320,
-  interview1: 240,
-  assignment: 170,
-  interview2: 120,
-  final: 85,
-  rejected: 45,
-};
+import { generateMockCandidates, REAL_AI_ENGINEER_STATS } from '@/utils/mockDataGenerator';
 
 export default function DashboardPage() {
   const [filters, setFilters] = useState({ position: '', source: '' });
   
-  // 실제 AI 엔지니어 데이터 생성 (useMemo로 캐싱)
+  // 샘플 데이터 생성 (500명, Vercel 용량 제한)
   const allCandidates = useMemo(() => generateMockCandidates(), []);
 
   // 필터 적용
@@ -37,8 +25,10 @@ export default function DashboardPage() {
     return true;
   });
 
-  // 필터링된 데이터로 통계 재계산
-  const filteredStats = {
+  // 필터가 없으면 실제 통계 사용, 필터가 있으면 샘플 데이터 통계 사용
+  const hasFilters = filters.position || filters.source;
+  
+  const filteredStats = hasFilters ? {
     total: filteredCandidates.length,
     proposal: filteredCandidates.filter(c => c.status === 'PROPOSAL').length,
     proposalAccepted: filteredCandidates.filter(c => c.status === 'PROPOSAL_ACCEPTED').length,
@@ -50,7 +40,7 @@ export default function DashboardPage() {
     interview2: filteredCandidates.filter(c => c.status === 'INTERVIEW_2').length,
     final: filteredCandidates.filter(c => c.status === 'FINAL').length,
     rejected: filteredCandidates.filter(c => c.status === 'REJECTED').length,
-  };
+  } : REAL_AI_ENGINEER_STATS; // 필터 없으면 실제 데이터 사용!
 
   // HR 메트릭 계산
   const leadTime = calculateLeadTime(filteredCandidates);
