@@ -96,6 +96,32 @@ function getRandomPhone(): string {
   return `010-${middle}-${last}`;
 }
 
+// 이메일 도메인 배열
+const emailDomains = [
+  'naver.com',
+  'gmail.com',
+  'daum.net',
+  'kakao.com',
+  'hanmail.net',
+  'nate.com',
+  'hotmail.com',
+  'outlook.com',
+];
+
+// 랜덤 이메일 생성
+function getRandomEmail(name: string, id: number): string {
+  const cleanName = name.toLowerCase().replace(/\s/g, '');
+  const domain = emailDomains[Math.floor(Math.random() * emailDomains.length)];
+  const randomNum = Math.floor(Math.random() * 9000) + 1000;
+  const patterns = [
+    `${cleanName}${randomNum}@${domain}`,
+    `${cleanName}.${id}@${domain}`,
+    `${cleanName}_${randomNum}@${domain}`,
+    `${randomNum}${cleanName}@${domain}`,
+  ];
+  return patterns[Math.floor(Math.random() * patterns.length)];
+}
+
 // 가중치 기반 랜덤 선택
 function getWeightedRandom<T extends string>(distribution: Record<T, number>): T {
   const rand = Math.random();
@@ -132,7 +158,7 @@ export function generateMockCandidates(): Candidate[] {
       candidates.push({
         id: String(idCounter++),
         name,
-        email: `${name.toLowerCase().replace(/\s/g, '')}${Math.floor(Math.random() * 1000)}@example.com`,
+        email: getRandomEmail(name, idCounter),
         phone: getRandomPhone(),
         position,
         status: status as CandidateStatus,
